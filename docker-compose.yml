@@ -13,7 +13,13 @@ services:
 
   worker:
     build: .
-    command: opensanctions crawl us_ofac_sdn
+    command: bash -c -i "
+        rm -rf ../data/datasets
+        && rm -rf ../data/cache
+        && opensanctions run un_sc_sanctions
+        && mkdir -p ../data/export
+        && ftm export-excel -i ../data/datasets/un_sc_sanctions/entities.ftm.json -o ../data/export/un_sc_sanctions.xlsx
+        "
     links:
       - postgres
     volumes:
