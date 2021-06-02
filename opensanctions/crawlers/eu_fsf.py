@@ -83,3 +83,19 @@ def crawl(context):
     doc = remove_namespace(doc)
     for entry in doc.findall(".//sanctionEntity"):
         parse_entry(context, entry)
+
+
+#------------------------MOD------------------------------
+from opensanctions.core.mod import insert_gendate
+
+
+def get_date(context):
+    try:      
+        context.fetch_artifact("source.xml", context.dataset.data.url)
+        doc = context.parse_artifact_xml("source.xml")
+        date_generated = doc.getroot().get('generationDate').split('T')[0]
+        print("MOD: date generated: {}".format(date_generated))
+        insert_gendate(context.dataset.name, date_generated)
+    except:
+        insert_gendate(context.dataset.name, 'NA')
+        raise

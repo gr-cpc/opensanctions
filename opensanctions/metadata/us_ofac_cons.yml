@@ -7,6 +7,7 @@ description: >
 country: us
 collections:
   - sanctions
+  - custom
 publisher:
   title: US Department of the Treasury
   url: https://www.treasury.gov/

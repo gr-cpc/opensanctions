@@ -205,3 +205,34 @@ def crawl(context):
 
     for el in doc.findall(".//ConsolidatedList"):
         parse_row(context, make_row(el))
+
+
+#------------------------MOD------------------------------
+from opensanctions.core.mod import insert_gendate
+from opensanctions.core.http import fetch_download
+#from opensanctions import settings
+from lxml import etree, html
+import re
+
+
+def parse_artifact_html(context, name):
+    file_path = context.get_artifact_path(name)
+    with open(file_path, "rb") as fh:
+        return html.parse(fh).getroot()
+
+
+def get_date(context):
+    try:
+        gendate_url = "https://www.gov.uk/government/publications/financial-sanctions-consolidated-list-of-targets#history"
+        #gendate_url = "https://www.gov.uk/government/publications/financial-sanctions-consolidated-list-of-targets"
+        context.fetch_artifact("gendate_source.html", gendate_url)
+        doc = parse_artifact_html(context, "gendate_source.html")
+        element = doc.get_element_by_id("history").findall(".//br")[0].tail
+        element = re.search(r"(\d+\s*\w+\s*\d+)",element)[0]
+        print("MOD: date generated: {}".format(element))
+        insert_gendate(context.dataset.name, element)
+    except:
+        insert_gendate(context.dataset.name, 'NA')
+        raise
+
+

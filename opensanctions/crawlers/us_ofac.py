@@ -407,3 +407,23 @@ def crawl(context):
 
     for relation in doc.findall(".//ProfileRelationship"):
         parse_relation(context, relation)
+
+
+#------------------------MOD------------------------------
+from opensanctions.core.mod import insert_gendate
+
+
+def get_date(context):
+    try:      
+        context.fetch_artifact("source.xml", context.dataset.data.url)
+        doc = context.parse_artifact_xml("source.xml")
+        doc = remove_namespace(doc).getroot()
+        
+        doi = doc.find('./DateOfIssue')
+        d = [child.text for child in doi]
+        date_generated = "{}-{}-{}".format(d[2],d[1],d[0])
+        print("MOD: date generated: {}".format(date_generated))
+        insert_gendate(context.dataset.name, date_generated)
+    except:
+        insert_gendate(context.dataset.name, 'NA')
+        raise

@@ -75,7 +75,15 @@ class Dataset(object):
 
     @classmethod
     def get(cls, name):
-        return cls._load_cache().get(name)
+        '''INFO load_cache, if cls._cache not already exist, calls cls._from_metadata(file_path) for each file_path. This opens the relevant yaml.
+        if it is a collection yaml, it will have TYPE "collection", otherwise it won't have a "type" field, and the config.get("type", Source.TYPE)
+        will give Source.TYPE constant from Source class (which = 'source') to the type_ var. thus, base of TYPE, it will return either a Collection
+        or a Source object. These objects are children of the Dataset class, in fact "file_path" & "config" are passed as they are needed in the 
+        call of super().__init__ Dataset constructor.
+        Collection type has .datasets and .sources, and does some things to group and use and all of that. (maybe check more layer) 
+        The Source class has the methods .method(self), sources, and to_dict.
+        the .method(self) is called in Context(source).Crawl()'''
+        return cls._load_cache().get(name) # get here is dictionary method, cos _load_cache() creates dict if not exists & returns
 
     @classmethod
     def names(cls):

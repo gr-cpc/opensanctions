@@ -80,6 +80,12 @@ class Context(object):
             self.log.info("Crawl completed", fragment=self.fragment)
         except Exception:
             self.log.exception("Crawl failed")
+        try:            
+            self.log.info("Begin get gendate")
+            self.dataset.get_date_method(self)  
+            self.log.info("Get gendate completed")
+        except Exception:
+            self.log.exception("Get date failed")
         finally:
             self.close()
 
@@ -131,6 +137,14 @@ class Context(object):
             with open(ftm_path, "w") as fh:
                 for entity in self.dataset.store:
                     write_object(fh, entity)
+        except:
+            pass
+        try:                                                                                        #MOD
+            from opensanctions.core.mod import export_gendate                                       #MOD
+            date_exp_path = settings.DATASET_PATH.parent                                            #MOD
+            date_exp_path = date_exp_path.joinpath("export").joinpath("generated_dates.csv")       #MOD
+            date_exp_path.parent.mkdir(exist_ok=True, parents=True)                                 #MOD
+            export_gendate(date_exp_path)                                                           #MOD
         finally:
             self.close()
 

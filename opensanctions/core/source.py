@@ -54,7 +54,13 @@ class Source(Dataset):
     def method(self):
         """Load the actual crawler code behind the dataset."""
         method = "crawl"
-        package = self.entry_point
+        package = self.entry_point 
+        # the entry point is the relevant crawler .py file in the crawlers directory for each source, config found in each source .yaml config fields
+        # e.g. entry_point: opensanctions.crawlers.un_sc_sanctions in un_sc_sanctions.yml
+        # by default the method is "crawl", so it would be calling the "crawl" method from the relevant crawler package (.py file) through getattr.
+        # since it is a @property function, it is actually a getter to return the crawl() function and call it from Context class line self.dataset.method(self)
+        # as self.dataset.crawl(). Since crawl(context) function in crawler .py takes context argument, it is actually then passing the (self) in .method(self)
+        # actually as the context argument in crawl(context).
         if package is None:
             raise RuntimeError("The dataset has no entry point!")
         if ":" in package:
@@ -74,3 +80,22 @@ class Source(Dataset):
             }
         )
         return data
+
+    
+    #---------------MOD--------------
+    
+    
+    @property
+    def get_date_method(self):
+        """Load the actual crawler code behind the dataset."""
+        method = "get_date" #MOD 
+        package = self.entry_point 
+
+        if package is None:
+            raise RuntimeError("The dataset has no entry point!")
+        if ":" in package:
+            #package, method = package.rsplit(":", 1)
+            package, _ = package.rsplit(":", 1) #MOD
+                
+        module = import_module(package)
+        return getattr(module, method)
