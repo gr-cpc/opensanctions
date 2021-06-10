@@ -6,4 +6,4 @@ RUN pip install --no-cache-dir -e /opensanctions
 
 ENV OPENSANCTIONS_DATA_PATH /data
 
-CMD ["opensanctions", "run"]
+CMD ["opensanctions", "-u", "run"]

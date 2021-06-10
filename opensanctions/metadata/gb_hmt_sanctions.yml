@@ -6,6 +6,7 @@ description: >
 country: gb
 collections:
   - sanctions
+  - custom
 publisher:
   title: HM Treasury
   url: https://www.gov.uk/

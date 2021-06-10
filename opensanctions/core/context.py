@@ -98,3 +98,30 @@ class Context(object):
         clear_contextvars()
 
         db.session.commit()
+
+
+#--------MOD---------------
+
+    def write_crawl_complete(self, bool_status):
+        import json
+        import time
+        time.sleep(1)
+        data = json.dumps({'crawl_complete':bool_status}, indent=4)
+        
+        check_path = settings.DATASET_PATH.parent                                            #MOD
+        check_path = check_path.joinpath("check").joinpath("status.json")
+        check_path.parent.mkdir(exist_ok=True, parents=True)
+        
+        try:
+            f = open(check_path, 'w')
+            json.dump(data, f)
+            self.log.info("SETTING CURRENT STATUS: {}".format(bool_status))
+        except:
+            f = open(check_path, 'x')
+            json.dump(data, f)
+            self.log.info("SETTING CURRENT STATUS: {}".format(bool_status))
+        finally:
+            f.close()
+            
+        
+        

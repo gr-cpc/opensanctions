@@ -15,7 +15,11 @@ services:
   app:
     build: .
     image: pudo/opensanctions
-    command: opensanctions run
+    command: bash -c -i "
+        rm -rf ../data/datasets
+        && rm -rf ../data/cache
+        && opensanctions run custom
+        "
     hostname: osapp
     links:
       - postgres
@@ -26,3 +30,12 @@ services:
       - "/tmp"
     environment:
       OPENSANCTIONS_DATABASE_URI: postgresql://opensanctions:opensanctions@postgres/opensanctions
+      
+  pypg_connector:
+    build: pypg_connector/.
+    image: pypg
+    #command: tail -f /dev/null
+    command: python -u test.py
+    volumes:
+      - "./data:/data"
+      - "./pypg_connector/src:/code"
