@@ -48,18 +48,20 @@ def export(dataset):
 @cli.command("run", help="Run the full process for the given dataset")
 @click.argument("dataset", default=Dataset.ALL, type=click.Choice(Dataset.names()))
 def run(dataset):
-    dataset = Dataset.get(dataset)
-    for source in dataset.sources:
-        Context(source).crawl()
-    for dataset_ in dataset.datasets:
-        context = Context(dataset_)
-        context.export()
-    for i in range(5):
-        try:
-            context.write_crawl_complete(True)
-            break
-        except:
-            pass #write_crawl_complete already waits 1 sec
+    try:
+        dataset = Dataset.get(dataset)
+        for source in dataset.sources:
+            Context(source).crawl()
+        for dataset_ in dataset.datasets:
+            context = Context(dataset_)
+            context.export()
+    finally:
+        for i in range(5):
+            try:
+                context.write_crawl_complete(True)
+                break
+            except:
+                pass #write_crawl_complete already waits 1 sec
             
 
 
