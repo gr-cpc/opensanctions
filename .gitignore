@@ -15,7 +15,7 @@ balkhashdb
 
 # Distribution / packaging
 .Python
-pypg_connector/settings.py
+pypg_connector/src/settings.py
 env/
 venv/
 build/
