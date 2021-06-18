@@ -4,6 +4,7 @@ from opensanctions.core.source import Source
 from opensanctions.core.context import Context
 from opensanctions.core.entity import Entity
 from opensanctions.core.logs import configure_logging
+from opensanctions.core.mod import insert_gendate, export_gendate
 
 from opensanctions.model.base import upgrade_db
 
